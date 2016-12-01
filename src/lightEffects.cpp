@@ -2,7 +2,7 @@
 #include <NeoCube.h>
 
 void cubeComplete();
-NeoCube cube(3, 1, 5, 6, NEO_GRB + NEO_KHZ800, &cubeComplete);
+NeoCube::NeoCube cube(3, 1, 5, 6, NEO_GRB + NEO_KHZ800, &cubeComplete);
 
 // Initialize everything and prepare to start
 void setup()
