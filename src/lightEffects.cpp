@@ -11,13 +11,13 @@ void setup()
   Serial.print("total pixels: ");
   Serial.println(cube.numPixels());
 
-    cube.begin();
-    cube.scanner(cube.Color(255,0,0), 25);
+  cube.begin();
+  cube.scanner(cube.Color(255,0,0), 25);
 }
 
 void loop()
 {
-    cube.update();
+  cube.update();
 }
 
 void cubeComplete()
