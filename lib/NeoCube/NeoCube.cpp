@@ -1,4 +1,5 @@
 #include <NeoCube.h>
+#include <Color.h>
 
 namespace NeoCube
 {
@@ -111,7 +112,7 @@ namespace NeoCube
   void NeoCube::rainbowCycleUpdate()
   {
     for(uint16_t i=0; i< numPixels(); i++) {
-      setPixelColor(i, wheel(((i * 256 / numPixels()) + _currentStep) & 255));
+      setPixelColor(i, Color::wheel(((i * 256 / numPixels()) + _currentStep) & 255));
     }
   }
 
@@ -178,7 +179,7 @@ namespace NeoCube
         setPixelColor(i, Color1);
       }
       else { // Fading tail
-        setPixelColor(i, DimColor(getPixelColor(i)));
+        setPixelColor(i, Color::dimColor(getPixelColor(i)));
       }
     }
   }
@@ -200,9 +201,19 @@ namespace NeoCube
   {
     // Calculate linear interpolation between Color1 and Color2
     // Optimise order of operations to minimize truncation error
-    uint8_t red = ((Red(Color1) * (_totalSteps - _currentStep)) + (Red(Color2) * _currentStep)) / _totalSteps;
-    uint8_t green = ((Green(Color1) * (_totalSteps - _currentStep)) + (Green(Color2) * _currentStep)) / _totalSteps;
-    uint8_t blue = ((Blue(Color1) * (_totalSteps - _currentStep)) + (Blue(Color2) * _currentStep)) / _totalSteps;
+    uint8_t redCompoment1 = Color::redComponent(Color1);
+    uint8_t greenCompoment1 = Color::greenComponent(Color1);
+    uint8_t blueCompoment1 = Color::blueComponent(Color1);
+
+    uint8_t redCompoment2 = Color::redComponent(Color2);
+    uint8_t greenCompoment2 = Color::greenComponent(Color2);
+    uint8_t blueCompoment2 = Color::blueComponent(Color2);
+
+    uint16_t remainingSteps = _totalSteps - _currentStep;
+
+    uint8_t red = ((redCompoment1 * remainingSteps) + (redCompoment2 * _currentStep)) / _totalSteps;
+    uint8_t green = ((greenCompoment1 * remainingSteps) + (greenCompoment2 * _currentStep)) / _totalSteps;
+    uint8_t blue = ((blueCompoment1 * remainingSteps) + (blueCompoment2 * _currentStep)) / _totalSteps;
 
     colorSet(Color(red, green, blue));
   }
@@ -214,50 +225,6 @@ namespace NeoCube
       setPixelColor(i, color);
     }
     show();
-  }
-
-  // Calculate 50% dimmed version of a color (used by ScannerUpdate)
-  uint32_t NeoCube::DimColor(uint32_t color)
-  {
-    // Shift R, G and B components one bit to the right
-    uint32_t dimColor = Color(Red(color) >> 1, Green(color) >> 1, Blue(color) >> 1);
-    return dimColor;
-  }
-
-  // Returns the Red component of a 32-bit color
-  uint8_t NeoCube::Red(uint32_t color)
-  {
-    return (color >> 16) & 0xFF;
-  }
-
-  // Returns the Green component of a 32-bit color
-  uint8_t NeoCube::Green(uint32_t color)
-  {
-    return (color >> 8) & 0xFF;
-  }
-
-  // Returns the Blue component of a 32-bit color
-  uint8_t NeoCube::Blue(uint32_t color)
-  {
-    return color & 0xFF;
-  }
-
-  // Input a value 0 to 255 to get a color value.
-  // The colours are a transition r - g - b - back to r.
-  uint32_t NeoCube::wheel(byte WheelPos)
-  {
-    WheelPos = 255 - WheelPos;
-    if(WheelPos < 85) {
-      return Color(255 - WheelPos * 3, 0, WheelPos * 3);
-    }
-    else if(WheelPos < 170) {
-      WheelPos -= 85;
-      return Color(0, WheelPos * 3, 255 - WheelPos * 3);
-    }
-    else {
-      WheelPos -= 170;
-      return Color(WheelPos * 3, 255 - WheelPos * 3, 0);
-    }
   }
 
 }

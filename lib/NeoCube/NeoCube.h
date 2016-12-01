@@ -31,10 +31,6 @@ namespace NeoCube
     // Reverse pattern direction
     void reverse();
 
-    // Input a value 0 to 255 to get a color value.
-    // The colours are a transition r - g - b - back to r.
-    uint32_t wheel(byte WheelPos);
-
   private:
     uint16_t _x, _y, _z; //possar a uint8_t per optimitzar memoria
 
@@ -69,18 +65,6 @@ namespace NeoCube
 
     // Set all pixels to a color (synchronously)
     void colorSet(uint32_t color);
-
-    // Calculate 50% dimmed version of a color (used by ScannerUpdate)
-    uint32_t DimColor(uint32_t color);
-
-    // Returns the Red component of a 32-bit color
-    uint8_t Red(uint32_t color);
-
-    // Returns the Green component of a 32-bit color
-    uint8_t Green(uint32_t color);
-
-    // Returns the Blue component of a 32-bit color
-    uint8_t Blue(uint32_t color);
   };
 
 }
